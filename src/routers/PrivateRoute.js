@@ -1,30 +1,10 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
 
-import { Route, Redirect } from 'react-router-dom';
+import { Navigate } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../auth/AuthContext";
 
-
-export const PrivateRoute = ({
-    isAuthenticated,
-    component: Component,
-    ...rest
-}) => {
-    
-    localStorage.setItem('lastPath', rest.location.pathname);
-
-    return (
-        <Route { ...rest }
-            component={ (props) => (
-                ( isAuthenticated )
-                    ? ( <Component { ...props } /> )
-                    : ( <Redirect to="/login" /> )
-            )}
-        
-        />
-    )
-}
-
-PrivateRoute.propTypes = {
-    isAuthenticated: PropTypes.bool.isRequired,
-    component: PropTypes.func.isRequired
-}
+export const PrivateRoute = ({ children }) => {
+  const { user } = useContext(AuthContext);
+  return user.logged ? children : <Navigate to="/login" />;
+};
